@@ -10,6 +10,7 @@ class Apollo():
     self.INITIAL_WAIT = 2
 
     self.RED_ANSI = "\033[31m"
+    self.GREEN_ANSI = "\033[32m"
     self.RESET_ANSI = "\033[0m"
 
   def extract_yt_search_urls(self) -> list[str]:
@@ -79,7 +80,9 @@ class Apollo():
 
     driver = webdriver.Chrome(options=options)
 
-    for search_url in yt_search_urls:
+    for indx, search_url in enumerate(yt_search_urls):
+      print(f"{self.GREEN_ANSI}{indx+1}/{len(yt_search_urls)}{self.RESET_ANSI}")
+
       try:
         driver.get(search_url)
       except Exception as e:
