@@ -8,6 +8,8 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
 import re
+from datetime import datetime, timedelta
+import pytz
 
 class RadioKoperMusicExtracter():
   def __init__(self) -> None:
@@ -167,6 +169,7 @@ class Apollo():
   def run(self, days_to_extract:int):
     yt_video_urls = self.radio_koper_music_interacter.extract_yt_video_urls(days_to_extract)
 
+    #Get video ids
     yt_video_url_pattern = re.compile(r"(?:https:\/\/www\.youtube\.com\/watch\?v=)(?P<id>[a-zA-Z0-9\-_]{11})(?:\&.*)?")
     video_ids = []
     for yt_video_url in yt_video_urls:
@@ -175,3 +178,17 @@ class Apollo():
         video_ids.append(match.group("id"))
       else:
         print(f"{self.RED_ANSI}Match for {yt_video_url} not found!{self.RESET_ANSI}")
+
+    #Create playlist title
+    cest = pytz.timezone("Europe/Berlin")
+    cest_time = datetime.now(cest)
+    n_days_ago = cest_time - timedelta(days=days_to_extract-1)
+    playlist_title = f"Radio Koper Music from {n_days_ago.day}-{n_days_ago.month}-{n_days_ago.year} to {cest_time.day}-{cest_time.month}-{cest_time.year}"
+
+    #Create the playlist
+    playlist_id = self.youtube_interacter.create_playlist(playlist_title)
+
+    #Add videos to playlist
+    self.youtube_interacter.add_videos_to_playlist(video_ids, playlist_id)
+
+Apollo().run(1)
