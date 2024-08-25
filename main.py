@@ -79,13 +79,13 @@ class RadioKoperMusicExtracter():
     #Return urls
     return urls
   
-  def extract_yt_video_urls(self, days_to_extract:int, yt_search_urls=[]) -> list[str]:
+  def extract_yt_video_ids(self, days_to_extract:int, yt_search_urls=[]) -> list[str]:
     if not yt_search_urls:
       yt_search_urls = self.extract_yt_search_urls(days_to_extract)
 
-    yt_video_urls = []
+    yt_video_ids = []
 
-    print(f"{self.RED_ANSI}Starting extract_yt_video_urls{self.RESET_ANSI}")
+    print(f"{self.RED_ANSI}Starting extract_yt_video_ids{self.RESET_ANSI}")
 
     #Set up the driver
     options = Options()
@@ -97,6 +97,8 @@ class RadioKoperMusicExtracter():
 
     waiter = WebDriverWait(driver, 3)
 
+    yt_video_url_pattern = re.compile(r"(?:https:\/\/www\.youtube\.com\/watch\?v=)(?P<id>[a-zA-Z0-9\-_]{11})(?:\&.*)?")
+
     for indx, search_url in enumerate(yt_search_urls):
       print(f"{self.GREEN_ANSI}{indx+1}/{len(yt_search_urls)}{self.RESET_ANSI}")
 
@@ -106,14 +108,21 @@ class RadioKoperMusicExtracter():
         print(f"Could not get {search_url}. Error:", e)
 
       first_video_thumbnail_anchor = waiter.until(EC.presence_of_element_located(("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")))
+      video_url = first_video_thumbnail_anchor.get_attribute("href")
 
-      yt_video_urls.append(first_video_thumbnail_anchor.get_attribute("href"))
+      #Extract the video id
+      match = re.search(yt_video_url_pattern, video_url)
+      if match:
+        yt_video_ids.append(match.group("id"))
+      else:
+        print(f"{self.RED_ANSI}Match for {video_url} not found!{self.RESET_ANSI}")
+        continue
 
     #Quit driver
     driver.quit()
 
     #Return urls
-    return yt_video_urls
+    return yt_video_ids
 
 class YoutubeInteracter():
   def __init__(self) -> None:
@@ -167,17 +176,7 @@ class Apollo():
     self.RESET_ANSI = "\033[0m"
 
   def run(self, days_to_extract:int):
-    yt_video_urls = self.radio_koper_music_interacter.extract_yt_video_urls(days_to_extract)
-
-    #Get video ids
-    yt_video_url_pattern = re.compile(r"(?:https:\/\/www\.youtube\.com\/watch\?v=)(?P<id>[a-zA-Z0-9\-_]{11})(?:\&.*)?")
-    video_ids = []
-    for yt_video_url in yt_video_urls:
-      match = re.search(yt_video_url_pattern, yt_video_url)
-      if match:
-        video_ids.append(match.group("id"))
-      else:
-        print(f"{self.RED_ANSI}Match for {yt_video_url} not found!{self.RESET_ANSI}")
+    video_ids = self.radio_koper_music_interacter.extract_yt_video_ids(days_to_extract)
 
     #Create playlist title
     cest = pytz.timezone("Europe/Berlin")
@@ -190,5 +189,3 @@ class Apollo():
 
     #Add videos to playlist
     self.youtube_interacter.add_videos_to_playlist(video_ids, playlist_id)
-
-Apollo().run(1)
