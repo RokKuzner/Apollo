@@ -103,4 +103,46 @@ class Apollo():
 
     #Return urls
     return yt_video_urls
+
+class YoutubeInteracter():
+  def __init__(self) -> None:
+    self.scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+    self.secrets_file = "client_secrets.json"
+
+    self.flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+    self.credentials = self.flow.run_local_server()
+
+    self.youtube = googleapiclient.discovery.build("youtube", "v3", credentials=self.credentials)
+
+  def create_playlist(self, playlist_title:str) -> str:
+    new_playlist_request = self.youtube.playlists().insert(
+      part="snippet,status",
+      body={
+        "snippet": {
+          "title": playlist_title
+        },
+        "status": {
+          "privacyStatus": "public"
+        }
+      }
+    )
+    new_playlist_response = new_playlist_request.execute()
+
+    playlist_id = new_playlist_response["id"]
+    return playlist_id
   
+  def add_videos_to_playlist(self, video_ids:list[str], playlist_id:str):
+    for video_id in video_ids:
+      request = self.youtube.playlistItems().insert(
+        part='snippet',
+        body={
+          "snippet": {
+            "playlistId": playlist_id,
+            "resourceId":{
+              "kind": "youtube#video",
+              "videoId": video_id
+            }
+          }
+        }
+      )
+      response = request.execute()
