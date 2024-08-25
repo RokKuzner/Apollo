@@ -9,8 +9,11 @@ class Apollo():
     self.BETWEEN_WAIT = 0.5
     self.INITIAL_WAIT = 2
 
+    self.RED_ANSI = "\033[31m"
+    self.RESET_ANSI = "\033[0m"
+
   def extract_yt_search_urls(self) -> list[str]:
-    print("\n\nStarting extract_yt_search_urls")
+    print(f"{self.RED_ANSI}Starting extract_yt_search_urls{self.RESET_ANSI}")
 
     url = "https://radio.rtvslo.si/glasbenisos/?chid=5&lang=0#pageone"
 
@@ -66,7 +69,7 @@ class Apollo():
 
     yt_video_urls = []
 
-    print("\n\nStarting extract_yt_video_urls")
+    print(f"{self.RED_ANSI}Starting extract_yt_video_urls{self.RESET_ANSI}")
 
     #Set up the driver
     options = Options()
