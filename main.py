@@ -1,0 +1,96 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+import time
+
+class Apollo():
+  def __init__(self) -> None:
+    self.WAITER_TIMEOUT = 5
+    self.BETWEEN_WAIT = 0.5
+    self.INITIAL_WAIT = 2
+
+  def extract_yt_search_urls(self) -> list[str]:
+    print("\n\nStarting extract_yt_search_urls")
+
+    url = "https://radio.rtvslo.si/glasbenisos/?chid=5&lang=0#pageone"
+
+    #Set up the driver
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=options)
+
+    urls = []
+
+    #Get the page
+    driver.get(url)
+    time.sleep(self.INITIAL_WAIT)
+
+    #Get all day elements
+    days = driver.find_elements("css selector", ".page_one_days")
+
+    #Loop through all days
+    for day in [days[0]]:
+      day.click() #Click on the day
+
+      #Get all hours in that day and loop through tem
+      time.sleep(self.BETWEEN_WAIT)
+      hours = driver.find_elements("css selector", ".page_one_hours")
+      for hour in hours:
+        hour.click() #Click on the hour
+
+        #Get all songs in that hour and loop through them
+        time.sleep(self.BETWEEN_WAIT)
+        songs = driver.find_elements("css selector", "tbody tr td a")
+        for song in songs:
+          urls.append(song.get_attribute("href"))
+
+        driver.execute_script('document.querySelector(".ui-header a.ui-btn-left").click()') #Go one page back
+        time.sleep(self.BETWEEN_WAIT)
+
+      driver.execute_script('document.querySelector(".ui-header a.ui-btn-left").click()') #Go one page back
+      time.sleep(self.BETWEEN_WAIT)
+
+
+    #Quit the driver
+    driver.quit()
+
+    #Return urls
+    return urls
+  
+  def extract_yt_video_urls(self, yt_search_urls=[]) -> list[str]:
+    if not yt_search_urls:
+      yt_search_urls = self.extract_yt_search_urls()
+
+    yt_video_urls = []
+
+    print("\n\nStarting extract_yt_video_urls")
+
+    #Set up the driver
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=options)
+
+    for search_url in yt_search_urls:
+      try:
+        driver.get(search_url)
+      except Exception as e:
+        print(f"Could not get {search_url}. Error:", e)
+      time.sleep(self.INITIAL_WAIT)
+
+      first_video_thumbnail_anchor = driver.find_element("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")
+
+      yt_video_urls.append(first_video_thumbnail_anchor.get_attribute("href"))
+
+    #Quit driver
+    driver.quit()
+
+    #Return urls
+    return yt_video_urls
+  
+print(Apollo().extract_yt_video_urls())
