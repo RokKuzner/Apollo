@@ -7,7 +7,7 @@ import time
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
-class Apollo():
+class RadioKoperMusicExtracter():
   def __init__(self) -> None:
     self.WAITER_TIMEOUT = 5
     self.BETWEEN_WAIT = 0.5
