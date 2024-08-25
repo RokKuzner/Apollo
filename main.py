@@ -7,6 +7,8 @@ import time
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
+import re
+
 class RadioKoperMusicExtracter():
   def __init__(self) -> None:
     self.WAITER_TIMEOUT = 5
@@ -158,3 +160,18 @@ class Apollo():
   def __init__(self) -> None:
     self.radio_koper_music_interacter = RadioKoperMusicExtracter()
     self.youtube_interacter = YoutubeInteracter()
+
+    self.RED_ANSI = "\033[31m"
+    self.RESET_ANSI = "\033[0m"
+
+  def run(self, days_to_extract:int):
+    yt_video_urls = self.radio_koper_music_interacter.extract_yt_video_urls(days_to_extract)
+
+    yt_video_url_pattern = re.compile(r"(?:https:\/\/www\.youtube\.com\/watch\?v=)(?P<id>[a-zA-Z0-9\-_]{11})(?:\&.*)?")
+    video_ids = []
+    for yt_video_url in yt_video_urls:
+      match = re.search(yt_video_url_pattern, yt_video_url)
+      if match:
+        video_ids.append(match.group("id"))
+      else:
+        print(f"{self.RED_ANSI}Match for {yt_video_url} not found!{self.RESET_ANSI}")
