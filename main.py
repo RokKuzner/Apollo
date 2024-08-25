@@ -4,6 +4,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
+
 class Apollo():
   def __init__(self) -> None:
     self.WAITER_TIMEOUT = 5
@@ -101,4 +104,3 @@ class Apollo():
     #Return urls
     return yt_video_urls
   
-print(Apollo().extract_yt_video_urls())
