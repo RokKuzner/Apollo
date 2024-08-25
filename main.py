@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 class Apollo():
@@ -80,6 +81,8 @@ class Apollo():
 
     driver = webdriver.Chrome(options=options)
 
+    waiter = WebDriverWait(driver, 3)
+
     for indx, search_url in enumerate(yt_search_urls):
       print(f"{self.GREEN_ANSI}{indx+1}/{len(yt_search_urls)}{self.RESET_ANSI}")
 
@@ -89,7 +92,7 @@ class Apollo():
         print(f"Could not get {search_url}. Error:", e)
       time.sleep(self.INITIAL_WAIT)
 
-      first_video_thumbnail_anchor = driver.find_element("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")
+      first_video_thumbnail_anchor = waiter.until(EC.presence_of_element_located(("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")))
 
       yt_video_urls.append(first_video_thumbnail_anchor.get_attribute("href"))
 
