@@ -17,7 +17,7 @@ class RadioKoperMusicExtracter():
     self.GREEN_ANSI = "\033[32m"
     self.RESET_ANSI = "\033[0m"
 
-  def extract_yt_search_urls(self) -> list[str]:
+  def extract_yt_search_urls(self, days_to_extract:int) -> list[str]:
     print(f"{self.RED_ANSI}Starting extract_yt_search_urls{self.RESET_ANSI}")
 
     url = "https://radio.rtvslo.si/glasbenisos/?chid=5&lang=0#pageone"
@@ -39,8 +39,15 @@ class RadioKoperMusicExtracter():
     #Get all day elements
     days = driver.find_elements("css selector", ".page_one_days")
 
+    #Check if days_to_extract is int
+    if type(days_to_extract) != int:
+      raise Exception(f"Days to extract is {type(days_to_extract)}. Only {int} allowed.")
+    #Check if days_to_extract is greater than 0 and not more than the number of avalible days to extract
+    if days_to_extract <= 0 or days_to_extract > len(days):
+      raise Exception(f"Days to extract out of range. Value for days to extract must be greather than 0 and not more than the number of avalible days to extract (currently {len(days)}).") 
+
     #Loop through all days
-    for day in [days[0]]:
+    for day in days[:days_to_extract]:
       day.click() #Click on the day
 
       #Get all hours in that day and loop through tem
