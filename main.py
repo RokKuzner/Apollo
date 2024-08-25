@@ -75,9 +75,9 @@ class RadioKoperMusicExtracter():
     #Return urls
     return urls
   
-  def extract_yt_video_urls(self, yt_search_urls=[]) -> list[str]:
+  def extract_yt_video_urls(self, days_to_extract:int, yt_search_urls=[]) -> list[str]:
     if not yt_search_urls:
-      yt_search_urls = self.extract_yt_search_urls()
+      yt_search_urls = self.extract_yt_search_urls(days_to_extract)
 
     yt_video_urls = []
 
