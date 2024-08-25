@@ -146,3 +146,8 @@ class YoutubeInteracter():
         }
       )
       response = request.execute()
+
+class Apollo():
+  def __init__(self) -> None:
+    self.radio_koper_music_interacter = RadioKoperMusicExtracter()
+    self.youtube_interacter = YoutubeInteracter()
