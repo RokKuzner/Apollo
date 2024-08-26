@@ -169,13 +169,14 @@ class YoutubeInteracter():
 
 class Apollo():
   def __init__(self) -> None:
-    self.radio_koper_music_interacter = RadioKoperMusicExtracter()
-    self.youtube_interacter = YoutubeInteracter()
-
     self.RED_ANSI = "\033[31m"
     self.RESET_ANSI = "\033[0m"
 
   def run(self, days_to_extract:int):
+    #Initialize RadioKoperMusicExtracter
+    self.radio_koper_music_interacter = RadioKoperMusicExtracter()
+
+    #Get youtube video ids of songs played by Radio Koper in the past "days_to_extract" days
     video_ids = self.radio_koper_music_interacter.extract_yt_video_ids(days_to_extract)
 
     #Create playlist title
@@ -183,6 +184,9 @@ class Apollo():
     cest_time = datetime.now(cest)
     n_days_ago = cest_time - timedelta(days=days_to_extract-1)
     playlist_title = f"Radio Koper Music from {n_days_ago.day}-{n_days_ago.month}-{n_days_ago.year} to {cest_time.day}-{cest_time.month}-{cest_time.year}"
+
+    #Initialize YoutubeInteracter
+    self.youtube_interacter = YoutubeInteracter()
 
     #Create the playlist
     playlist_id = self.youtube_interacter.create_playlist(playlist_title)
