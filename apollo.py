@@ -22,7 +22,7 @@ class RadioKoperMusicExtracter():
     self.RESET_ANSI = "\033[0m"
 
   def extract_yt_search_urls(self, day_to_extract:int) -> list[str]:
-    print(f"{self.RED_ANSI}Starting extract_yt_search_urls{self.RESET_ANSI}")
+    print(f"{self.RED_ANSI}Starting extraction of youtube search urls{self.RESET_ANSI}")
 
     url = "https://radio.rtvslo.si/glasbenisos/?chid=5&lang=0#pageone"
 
@@ -85,7 +85,7 @@ class RadioKoperMusicExtracter():
 
     yt_video_ids = []
 
-    print(f"{self.RED_ANSI}Starting extract_yt_video_ids{self.RESET_ANSI}")
+    print(f"{self.RED_ANSI}Starting extraction of youtube videos ids{self.RESET_ANSI}")
 
     #Set up the driver
     options = Options()
@@ -126,6 +126,9 @@ class RadioKoperMusicExtracter():
 
 class YoutubeInteracter():
   def __init__(self) -> None:
+    self.BLUE_ANSI = "\033[34m"
+    self.RESET_ANSI = "\033[0m"
+
     self.scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
     self.secrets_file = "client_secrets.json"
 
@@ -152,7 +155,8 @@ class YoutubeInteracter():
     return playlist_id
   
   def add_videos_to_playlist(self, video_ids:list[str], playlist_id:str):
-    for video_id in video_ids:
+    for indx, video_id in enumerate(video_ids):
+      print(f"{self.BLUE_ANSI}{indx+1}/{len(video_ids)}{self.RESET_ANSI}")
       request = self.youtube.playlistItems().insert(
         part='snippet',
         body={
@@ -171,6 +175,7 @@ class Apollo():
   def __init__(self) -> None:
     self.RED_ANSI = "\033[31m"
     self.RESET_ANSI = "\033[0m"
+    self.BLUE_ANSI = "\033[34m"
 
   def run(self, day_to_extract:int):
     #Initialize RadioKoperMusicExtracter
@@ -189,7 +194,10 @@ class Apollo():
     self.youtube_interacter = YoutubeInteracter()
 
     #Create the playlist
+    print(f"{self.BLUE_ANSI}Creating playlist '{playlist_title}'{self.RESET_ANSI}")
     playlist_id = self.youtube_interacter.create_playlist(playlist_title)
+    print(f"{self.BLUE_ANSI}Playlist created{self.RESET_ANSI}")
 
     #Add videos to playlist
+    print(f"{self.BLUE_ANSI}\nAdding videos to playlist...{self.RESET_ANSI}")
     self.youtube_interacter.add_videos_to_playlist(video_ids, playlist_id)
