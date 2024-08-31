@@ -106,6 +106,7 @@ class RadioKoperMusicExtracter():
         driver.get(search_url)
       except Exception as e:
         print(f"Could not get {search_url}. Error:", e)
+        continue
 
       first_video_thumbnail_anchor = waiter.until(EC.presence_of_element_located(("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")))
       video_url = first_video_thumbnail_anchor.get_attribute("href")
