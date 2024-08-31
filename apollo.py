@@ -21,7 +21,7 @@ class RadioKoperMusicExtracter():
     self.GREEN_ANSI = "\033[32m"
     self.RESET_ANSI = "\033[0m"
 
-  def extract_yt_search_urls(self, days_to_extract:int) -> list[str]:
+  def extract_yt_search_urls(self, day_to_extract:int) -> list[str]:
     print(f"{self.RED_ANSI}Starting extract_yt_search_urls{self.RESET_ANSI}")
 
     url = "https://radio.rtvslo.si/glasbenisos/?chid=5&lang=0#pageone"
@@ -43,15 +43,15 @@ class RadioKoperMusicExtracter():
     #Get all day elements
     days = driver.find_elements("css selector", ".page_one_days")
 
-    #Check if days_to_extract is int
-    if type(days_to_extract) != int:
-      raise Exception(f"Days to extract is {type(days_to_extract)}. Only {int} allowed.")
-    #Check if days_to_extract is greater than 0 and not more than the number of avalible days to extract
-    if days_to_extract <= 0 or days_to_extract > len(days):
-      raise Exception(f"Days to extract out of range. Value for days to extract must be greather than 0 and not more than the number of avalible days to extract (currently {len(days)}).") 
+    #Check if day_to_extract is int
+    if type(day_to_extract) != int:
+      raise Exception(f"Day to extract is {type(day_to_extract)}. Only {int} allowed.")
+    #Check if day_to_extract is valid
+    if day_to_extract < 0 or day_to_extract > len(days)-1:
+      raise Exception(f"Day to extract is not valid.")
 
     #Loop through all days
-    for day in days[:days_to_extract]:
+    for day in [days[day_to_extract]]:
       day.click() #Click on the day
 
       #Get all hours in that day and loop through tem
@@ -79,9 +79,9 @@ class RadioKoperMusicExtracter():
     #Return urls
     return urls
   
-  def extract_yt_video_ids(self, days_to_extract:int, yt_search_urls=[]) -> list[str]:
+  def extract_yt_video_ids(self, day_to_extract:int, yt_search_urls=[]) -> list[str]:
     if not yt_search_urls:
-      yt_search_urls = self.extract_yt_search_urls(days_to_extract)
+      yt_search_urls = self.extract_yt_search_urls(day_to_extract)
 
     yt_video_ids = []
 
@@ -172,18 +172,18 @@ class Apollo():
     self.RED_ANSI = "\033[31m"
     self.RESET_ANSI = "\033[0m"
 
-  def run(self, days_to_extract:int):
+  def run(self, day_to_extract:int):
     #Initialize RadioKoperMusicExtracter
     self.radio_koper_music_interacter = RadioKoperMusicExtracter()
 
-    #Get youtube video ids of songs played by Radio Koper in the past "days_to_extract" days
-    video_ids = self.radio_koper_music_interacter.extract_yt_video_ids(days_to_extract)
+    #Get youtube video ids of songs played by Radio Koper on the day "day_to_extract"
+    video_ids = self.radio_koper_music_interacter.extract_yt_video_ids(day_to_extract)
 
     #Create playlist title
     cest = pytz.timezone("Europe/Berlin")
     cest_time = datetime.now(cest)
-    n_days_ago = cest_time - timedelta(days=days_to_extract-1)
-    playlist_title = f"Radio Koper Music from {n_days_ago.day}-{n_days_ago.month}-{n_days_ago.year} to {cest_time.day}-{cest_time.month}-{cest_time.year}"
+    day_to_extract_date = cest_time - timedelta(days=day_to_extract)
+    playlist_title = f"Radio Koper Music from {day_to_extract_date.day}. {day_to_extract_date.month}. {day_to_extract_date.year}"
 
     #Initialize YoutubeInteracter
     self.youtube_interacter = YoutubeInteracter()
