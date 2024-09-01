@@ -1,3 +1,4 @@
+import googleapiclient.errors
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -128,6 +129,7 @@ class RadioKoperMusicExtracter():
 class YoutubeInteracter():
   def __init__(self) -> None:
     self.BLUE_ANSI = "\033[34m"
+    self.RED_ANSI = "\033[31m"
     self.RESET_ANSI = "\033[0m"
 
     self.scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
@@ -158,19 +160,30 @@ class YoutubeInteracter():
   def add_videos_to_playlist(self, video_ids:list[str], playlist_id:str):
     for indx, video_id in enumerate(video_ids):
       print(f"{self.BLUE_ANSI}{indx+1}/{len(video_ids)}{self.RESET_ANSI}")
-      request = self.youtube.playlistItems().insert(
-        part='snippet',
-        body={
-          "snippet": {
-            "playlistId": playlist_id,
-            "resourceId":{
-              "kind": "youtube#video",
-              "videoId": video_id
-            }
+      self.add_video_to_playlist(video_id, playlist_id)
+
+  def add_video_to_playlist(self, video_id:str, playlist_id:str, attempt:int=1):
+    request = self.youtube.playlistItems().insert(
+      part='snippet',
+      body={
+        "snippet": {
+          "playlistId": playlist_id,
+          "resourceId":{
+            "kind": "youtube#video",
+            "videoId": video_id
           }
         }
-      )
+      }
+    )
+    try:
       response = request.execute()
+    except Exception as e:
+      if attempt > 3:
+        print(f"{self.RED_ANSI}Could not add video '{video_id}' to playlist. Attempted {attempt-1} times.{self.RESET_ANSI}")
+        return 1
+      print(f"{self.RED_ANSI}Error while adding video id '{video_id}' to playlist. Attempt {attempt}. Attempting again...{self.RESET_ANSI}")
+      time.sleep(0.5)
+      self.add_video_to_playlist(video_id, playlist_id, attempt=attempt+1)
 
 class Apollo():
   def __init__(self) -> None:
