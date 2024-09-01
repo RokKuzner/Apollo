@@ -16,7 +16,7 @@
                         <mxPoint x="330" y="350" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="9" value="&lt;font color=&quot;#ffffff&quot;&gt;GET request&lt;/font&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;" connectable="0" vertex="1" parent="8">
+                <mxCell id="9" value="&lt;font style=&quot;background-color: rgb(0, 0, 0);&quot; color=&quot;#ffffff&quot;&gt;GET request&lt;/font&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;" connectable="0" vertex="1" parent="8">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="10" value="" style="endArrow=classic;html=1;fontSize=13;fontColor=#FFFFFF;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="2">
@@ -25,7 +25,7 @@
                         <mxPoint x="360" y="440" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="11" value="Scraped youtube video IDs" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#FFFFFF;" connectable="0" vertex="1" parent="10">
+                <mxCell id="11" value="&lt;span style=&quot;background-color: rgb(4, 4, 5);&quot;&gt;Scraped youtube video IDs&lt;/span&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#FFFFFF;" connectable="0" vertex="1" parent="10">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="YouTube Data API v3" style="whiteSpace=wrap;html=1;aspect=fixed;fontSize=13;fontColor=#ffffff;fillColor=#6a00ff;strokeColor=#3700CC;" vertex="1" parent="1">
@@ -37,7 +37,7 @@
                         <mxPoint x="650" y="540" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="14" value="Create Playlist" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#FFFFFF;" connectable="0" vertex="1" parent="13">
+                <mxCell id="14" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;Create Playlist&lt;/span&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#FFFFFF;" connectable="0" vertex="1" parent="13">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="16" value="" style="endArrow=classic;html=1;fontSize=13;fontColor=#FFFFFF;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="12">
@@ -46,7 +46,7 @@
                         <mxPoint x="650" y="540" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="17" value="For each video:&lt;br&gt;add video to playlist" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#FFFFFF;" connectable="0" vertex="1" parent="16">
+                <mxCell id="17" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;For each video:&lt;br&gt;add video to playlist&lt;/span&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#FFFFFF;" connectable="0" vertex="1" parent="16">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>
