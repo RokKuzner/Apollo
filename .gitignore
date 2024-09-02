@@ -164,3 +164,4 @@ cython_debug/
 #Custom
 client_secrets.json
 notes.txt
+token.pickle
