@@ -5,6 +5,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+import os
+import pickle
+from google.auth.transport.requests import Request
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
@@ -134,11 +137,29 @@ class YoutubeInteracter():
 
     self.scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
     self.secrets_file = "client_secrets.json"
+    credentials = None
 
-    self.flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
-    self.credentials = self.flow.run_local_server()
+    #Load saved credentials
+    if os.path.exists("token.pickle"):
+      with open("token.pickle", "rb") as token:
+        credentials = pickle.load(token)
+        print(f"{self.BLUE_ANSI}Credentials loaded from token.pickle{self.RESET_ANSI}")
 
-    self.youtube = googleapiclient.discovery.build("youtube", "v3", credentials=self.credentials)
+    #If there are no (valid) credentials
+    if not credentials or not credentials.valid:
+      if credentials and credentials.expired and credentials.refresh_token: #If credentails arent valid
+        credentials.refresh(Request())
+        print(f"{self.BLUE_ANSI}Expired credentials refreshed{self.RESET_ANSI}")
+      else: # If there are no credentials
+        print(f"{self.BLUE_ANSI}No credentials. To create credentials log in via the localhost server.{self.RESET_ANSI}")
+        self.flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+        credentials = self.flow.run_local_server()
+
+      #Save the new credentials
+      with open("token.pickle", "wb") as token:
+        pickle.dump(credentials, token)
+
+    self.youtube = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
 
   def create_playlist(self, playlist_title:str) -> str:
     new_playlist_request = self.youtube.playlists().insert(
