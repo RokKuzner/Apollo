@@ -143,17 +143,13 @@ class YoutubeInteracter():
     if os.path.exists("token.pickle"):
       with open("token.pickle", "rb") as token:
         credentials = pickle.load(token)
-        print(f"{self.BLUE_ANSI}Credentials loaded from token.pickle{self.RESET_ANSI}")
+        print(f"{self.RED_ANSI}Credentials loaded from token.pickle{self.RESET_ANSI}")
 
     #If there are no (valid) credentials
     if not credentials or not credentials.valid:
-      if credentials and credentials.expired and credentials.refresh_token: #If credentails arent valid
-        credentials.refresh(Request())
-        print(f"{self.BLUE_ANSI}Expired credentials refreshed{self.RESET_ANSI}")
-      else: # If there are no credentials
-        print(f"{self.BLUE_ANSI}No credentials. To create credentials log in via the localhost server.{self.RESET_ANSI}")
-        self.flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
-        credentials = self.flow.run_local_server()
+      print(f"{self.RED_ANSI}No (valid) credentials. To create (valid) credentials log in via the localhost server.{self.RESET_ANSI}")
+      self.flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+      credentials = self.flow.run_local_server()
 
       #Save the new credentials
       with open("token.pickle", "wb") as token:
