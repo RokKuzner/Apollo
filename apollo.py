@@ -147,15 +147,25 @@ class YoutubeInteracter():
 
     #If there are no (valid) credentials
     if not credentials or not credentials.valid:
-      print(f"{self.RED_ANSI}No (valid) credentials. To create (valid) credentials log in via the localhost server.{self.RESET_ANSI}")
-      self.flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
-      credentials = self.flow.run_local_server()
+      if credentials and credentials.expired and credentials.refresh_token: #If credentails arent valid
+        try:
+          credentials.refresh(Request())
+          print(f"{self.BLUE_ANSI}Expired credentials refreshed{self.RESET_ANSI}")
+        except:
+          credentials = self.run_local_server_credentials()
+      else: # If there are no credentials
+        print(f"{self.RED_ANSI}No credentials. To create credentials log in via the localhost server.{self.RESET_ANSI}")
+        credentials = self.run_local_server_credentials()
 
       #Save the new credentials
       with open("token.pickle", "wb") as token:
         pickle.dump(credentials, token)
 
     self.youtube = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
+
+  def run_local_server_credentials(self):
+    flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+    return flow.run_local_server()
 
   def create_playlist(self, playlist_title:str) -> str:
     new_playlist_request = self.youtube.playlists().insert(
