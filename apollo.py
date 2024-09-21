@@ -126,8 +126,8 @@ class RadioKoperMusicExtracter():
     #Quit driver
     driver.quit()
 
-    #Return urls
-    return yt_video_ids
+    #Return reversed order of ids (from morning music to evening music)
+    return yt_video_ids[::-1]
 
 class YoutubeInteracter():
   def __init__(self) -> None:
