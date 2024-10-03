@@ -112,8 +112,16 @@ class RadioKoperMusicExtracter():
         print(f"Could not get {search_url}. Error:", e)
         continue
 
-      first_video_thumbnail_anchor = waiter.until(EC.presence_of_element_located(("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")))
+      try:
+        first_video_thumbnail_anchor = waiter.until(EC.presence_of_element_located(("css selector", "#contents ytd-video-renderer #dismissible.ytd-video-renderer ytd-thumbnail.ytd-video-renderer a")))
+      except Exception as e:
+        print(f"Video element could not be extracted when searching at {search_url}. Error:", e)
+        continue
+
       video_url = first_video_thumbnail_anchor.get_attribute("href")
+      if not video_url:
+        print(f"First video element when searching at {search_url} does not have a href attribute.")
+        continue
 
       #Extract the video id
       match = re.search(yt_video_url_pattern, video_url)
