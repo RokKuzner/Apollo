@@ -225,6 +225,7 @@ class Apollo():
     self.RED_ANSI = "\033[31m"
     self.RESET_ANSI = "\033[0m"
     self.BLUE_ANSI = "\033[34m"
+    self.GREEN_ANSI = "\033[32m"
 
   def run(self, day_to_extract:int):
     #Initialize RadioKoperMusicExtracter
@@ -250,3 +251,6 @@ class Apollo():
     #Add videos to playlist
     print(f"{self.BLUE_ANSI}\nAdding videos to playlist...{self.RESET_ANSI}")
     self.youtube_interacter.add_videos_to_playlist(video_ids, playlist_id)
+
+    #Print the finished message
+    print(f"{self.GREEN_ANSI}All songs added to the playlist! Playlis id: {playlist_id}{self.RESET_ANSI}")
