@@ -18,6 +18,6 @@ coverage.xml
 .mypy_cache
 .pytest_cache
 .hypothesis
-client_secrets.json
+#client_secrets.json
 notes.txt
 token.pickle
