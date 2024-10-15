@@ -40,5 +40,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 WORKDIR /app
 
+#Expose port 8000
+EXPOSE 8000
+
 # Start the crawler
 CMD ["python", "server_side_one_time_run.py"]
