@@ -41,4 +41,4 @@ COPY . /app
 WORKDIR /app
 
 # Start the crawler
-CMD ["python", "server_side_one_time_run.py.py"]
+CMD ["python", "server_side_one_time_run.py"]
