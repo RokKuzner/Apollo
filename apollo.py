@@ -144,14 +144,15 @@ class YoutubeInteracter():
     self.RESET_ANSI = "\033[0m"
 
     self.scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
-    self.secrets_file = "client_secrets.json"
+    self.secrets_file = "secrets/client_secrets.json"
+    self.token_file = "secrets/token.pickle"
     credentials = None
 
     #Load saved credentials
-    if os.path.exists("token.pickle"):
-      with open("token.pickle", "rb") as token:
+    if os.path.exists(self.token_file):
+      with open(self.token_file, "rb") as token:
         credentials = pickle.load(token)
-        print(f"{self.RED_ANSI}Credentials loaded from token.pickle{self.RESET_ANSI}")
+        print(f"{self.RED_ANSI}Credentials loaded from secrets/token.pickle{self.RESET_ANSI}")
 
     #If there are no (valid) credentials
     if not credentials or not credentials.valid:
@@ -166,7 +167,7 @@ class YoutubeInteracter():
         credentials = self.run_local_server_credentials()
 
       #Save the new credentials
-      with open("token.pickle", "wb") as token:
+      with open(self.token_file, "wb") as token:
         pickle.dump(credentials, token)
 
     self.youtube = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)

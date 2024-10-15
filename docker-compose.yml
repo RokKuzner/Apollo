@@ -2,7 +2,7 @@ services:
   apollo:
     build: .
     volumes:
-      - token:/app/token.pickle
+      - secrets:/app/secrets
 
 volumes:
-  token:
+  secrets:
