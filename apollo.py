@@ -209,8 +209,6 @@ class YoutubeInteracter():
     httpd = http.server.HTTPServer(server_address, WaitForGoogleOauthCode)
     httpd.handle_request()
 
-    print("THE CODE:", WaitForGoogleOauthCode.google_oauth_code)
-
     flow.fetch_token(code=WaitForGoogleOauthCode.google_oauth_code)
 
     return flow.credentials
