@@ -291,4 +291,4 @@ class Apollo():
     self.youtube_interacter.add_videos_to_playlist(video_ids, playlist_id)
 
     #Print the finished message
-    print(f"{self.GREEN_ANSI}All songs added to the playlist! Playlis id:")# {playlist_id}{self.RESET_ANSI}")
+    print(f"{self.GREEN_ANSI}All songs added to the playlist! Playlis id: {playlist_id}{self.RESET_ANSI}")
