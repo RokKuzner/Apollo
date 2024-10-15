@@ -1,3 +1,8 @@
 services:
   apollo:
     build: .
+    volumes:
+      - token:/app/token.pickle
+
+volumes:
+  token:
