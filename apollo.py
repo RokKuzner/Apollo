@@ -11,9 +11,29 @@ from google.auth.transport.requests import Request
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
+import http.server
+import urllib.parse
+
 import re
 from datetime import datetime, timedelta
 import pytz
+
+class WaitForGoogleOauthCode(http.server.BaseHTTPRequestHandler):
+  def do_GET(self):
+    self.send_response(200)
+    self.send_header("Content-type", "text/html")
+    self.end_headers()
+
+    #Get the code
+    query_string = urllib.parse.urlparse(self.path).query
+    parsed_args = urllib.parse.parse_qs(query_string)
+    WaitForGoogleOauthCode.google_oauth_code = dict(parsed_args.items())["code"][0]
+
+    #Return HTML
+    with open("html_responses/index.html", "rb") as f:
+      html_content = f.read()
+
+    self.wfile.write(html_content)
 
 class RadioKoperMusicExtracter():
   def __init__(self) -> None:
@@ -161,10 +181,10 @@ class YoutubeInteracter():
           credentials.refresh(Request())
           print(f"{self.BLUE_ANSI}Expired credentials refreshed{self.RESET_ANSI}")
         except:
-          credentials = self.run_local_server_credentials()
+          credentials = self.get_credentials_via_auth_url()
       else: # If there are no credentials
         print(f"{self.RED_ANSI}No credentials. To create credentials log in via the localhost server.{self.RESET_ANSI}")
-        credentials = self.run_local_server_credentials()
+        credentials = self.get_credentials_via_auth_url()
 
       #Save the new credentials
       with open(self.token_file, "wb") as token:
@@ -175,6 +195,25 @@ class YoutubeInteracter():
   def run_local_server_credentials(self):
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
     return flow.run_local_server()
+  
+  def get_credentials_via_auth_url(self):
+    flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+    flow.redirect_uri = "http://localhost:8000/"
+
+    auth_url, _ = flow.authorization_url(access_type="offline")
+
+    print(f"Go to url for account login: {auth_url}")
+
+    #Set up a localhost server to wait for the code
+    server_address = ("", 8000)
+    httpd = http.server.HTTPServer(server_address, WaitForGoogleOauthCode)
+    httpd.handle_request()
+
+    print("THE CODE:", WaitForGoogleOauthCode.google_oauth_code)
+
+    flow.fetch_token(code=WaitForGoogleOauthCode.google_oauth_code)
+
+    return flow.credentials
 
   def create_playlist(self, playlist_title:str) -> str:
     new_playlist_request = self.youtube.playlists().insert(
@@ -254,4 +293,4 @@ class Apollo():
     self.youtube_interacter.add_videos_to_playlist(video_ids, playlist_id)
 
     #Print the finished message
-    print(f"{self.GREEN_ANSI}All songs added to the playlist! Playlis id: {playlist_id}{self.RESET_ANSI}")
+    print(f"{self.GREEN_ANSI}All songs added to the playlist! Playlis id:")# {playlist_id}{self.RESET_ANSI}")
