@@ -42,7 +42,7 @@ def run():
     print(f"{RED_ANSI}Invalid entry. Select a number between 0 and 7.{RESET_ANSI}")
     return 1
 
-  Apollo().run(day_to_extract)
+  Apollo(10000).run(day_to_extract)
 
 if __name__ == "__main__":
   run()

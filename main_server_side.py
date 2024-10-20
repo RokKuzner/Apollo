@@ -10,7 +10,7 @@ while True:
     
     # Check if it's 00:01
     if now.hour == 0 and now.minute == 1:
-        Apollo().run(1)
+        Apollo(10000).run(1)
         # Wait for 60 seconds to avoid running multiple times within the same minute
         time.sleep(60)
     
