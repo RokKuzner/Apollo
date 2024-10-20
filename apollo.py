@@ -259,11 +259,15 @@ class YoutubeInteracter():
       self.add_video_to_playlist(video_id, playlist_id, attempt=attempt+1)
 
 class Apollo():
-  def __init__(self) -> None:
+  def __init__(self, avalible_quota:int) -> None:
     self.RED_ANSI = "\033[31m"
     self.RESET_ANSI = "\033[0m"
     self.BLUE_ANSI = "\033[34m"
     self.GREEN_ANSI = "\033[32m"
+
+    self.avalible_quota_points = avalible_quota
+    self.used_quota = 0
+    self.quota_points_required_per_song = 50
 
   def run(self, day_to_extract:int):
     #Initialize RadioKoperMusicExtracter
@@ -271,6 +275,17 @@ class Apollo():
 
     #Get youtube video ids of songs played by Radio Koper on the day "day_to_extract"
     video_ids = self.radio_koper_music_interacter.extract_yt_video_ids(day_to_extract)
+
+    #Calculate if quota for adding videos to playlist will be exceded
+    required_quota_points = len(video_ids) * self.quota_points_required_per_song
+
+    #If quota will be exceded: delete videos in the middle of playlist so quota isn't exceded
+    if required_quota_points > self.avalible_quota_points:
+      videos_to_delete = (required_quota_points - self.avalible_quota_points) // self.quota_points_required_per_song
+
+      #Delete videos from the middle of playlist
+      for i in range(videos_to_delete):
+        del video_ids[len(video_ids)//2]
 
     #Create playlist title
     cest = pytz.timezone("Europe/Berlin")
