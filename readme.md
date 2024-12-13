@@ -1,7 +1,7 @@
 # What Is Apollo
 Apollo is an app that extracts song titles from songs that played on a specific day on Radio Koper, gets the youtube video id of each song's youtube video and adds those videos to a playlist on your youtube channel.
 
-## Instalation
+# Instalation
 ### Setting Up The YouTube Data API and Credentials
 > [!WARNING]
 > Do not skip this step of the app won't work.
@@ -19,5 +19,5 @@ This project's dependencies are:
 - [Docker](https://docs.docker.com/get-started/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
-## Usage
+# Usage
 To start the app simply run `docker-compose build && docker-compose up` and watch the output in the console if you are later prompted to login.
