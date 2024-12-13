@@ -22,4 +22,4 @@ This project's dependencies are:
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
 # Usage
-To start the app simply run `docker-compose build && docker-compose up`. Watch at the console output, since you might be prompted to log into your Google account.
+To start the app simply run `docker-compose build && docker-compose up`. Watch the console output, since you might be prompted to log into your Google account.
