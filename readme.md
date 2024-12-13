@@ -1,5 +1,7 @@
 # What Is Apollo
-Apollo is an app that extracts song titles from songs that played on a specific day on Radio Koper, gets the youtube video id of each song's youtube video and adds those videos to a playlist on your youtube channel.
+Apollo is an app that creates a YouTube playlist with Radio Koper songs from a specific day.
+
+It achieves this by extracting song titles from songs that played on a specific day on Radio Koper, getting the youtube video id of each song's youtube video and adding those videos to a playlist on your youtube channel.
 
 # Instalation
 ### Setting Up The YouTube Data API and Credentials
